@@ -11,31 +11,26 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SeleniumRegistrationTest {
-
-    private WebDriver driver;
-
-    @BeforeAll
-    void setUp() throws Exception {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-        driver = new ChromeDriver(options);
-    }
-
     @Test
-    void testRegisterPageLoads() {
-        driver.get("http://localhost:8080/register");
-        assertTrue(driver.getPageSource().contains("Register"));
-    }
+    public void testRegisterPageLoads() throws Exception {
+        // Crear un directorio temporal único para evitar conflictos de perfil
+        Path tempProfile = Files.createTempDirectory("chrome-profile-");
 
-    @AfterAll
-    void tearDown() {
-        if (driver != null) {
-            driver.quit();
+        // Configurar opciones de Chrome
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new");              // evita abrir ventana (ideal para CI)
+        options.addArguments("--no-sandbox");                // evita restricciones de permisos
+        options.addArguments("--disable-dev-shm-usage");     // mejora estabilidad en runners
+        options.addArguments("--user-data-dir=" + tempProfile.toString()); // perfil único
+
+        WebDriver driver = new ChromeDriver(options);
+        try {
+            driver.get("http://localhost:8080/register");
+            assertTrue("La página no contiene el texto esperado 'Register'",
+                    driver.getPageSource().contains("Register"));
+        } finally {
+            driver.quit(); // Cierra correctamente la sesión y libera el perfil
         }
     }
 }

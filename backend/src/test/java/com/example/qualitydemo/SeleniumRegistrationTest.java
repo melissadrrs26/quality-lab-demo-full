@@ -27,7 +27,7 @@ public class SeleniumRegistrationTest {
         WebDriver driver = new ChromeDriver(options);
         try {
             // Esperar que el backend esté arriba (5s)
-            Thread.sleep(5000);
+            Thread.sleep(8000);
             driver.get("http://localhost:8080/register");
             assertTrue(driver.getPageSource().contains("Register"),
                     "La página no contiene el texto esperado 'Register'");

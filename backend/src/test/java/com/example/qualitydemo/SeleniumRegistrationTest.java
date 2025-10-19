@@ -27,8 +27,8 @@ public class SeleniumRegistrationTest {
         WebDriver driver = new ChromeDriver(options);
         try {
             driver.get("http://localhost:8080/register");
-            assertTrue("La página no contiene el texto esperado 'Register'",
-                    driver.getPageSource().contains("Register"));
+            assertTrue(driver.getPageSource().contains("Register"),
+                    "La página no contiene el texto esperado 'Register'");
         } finally {
             driver.quit(); // Cierra correctamente la sesión y libera el perfil
         }
